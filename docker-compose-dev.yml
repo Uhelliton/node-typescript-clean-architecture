@@ -1,13 +1,14 @@
 version: '3'
 
 services:
-  nestjs:
+  nodejs:
     build: .
     container_name: node-ca-api
     ports:
       - "3000:3000"
     volumes:
-      - .:/home/node/app:rw
+      - '.:/app'
+      - '/app/node_modules'
     restart: "no"
     command: sh
     stdin_open: true

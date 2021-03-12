@@ -1,10 +1,14 @@
-FROM node:12.18-alpine
+# base image
+FROM node:12.2.0-alpine
 
-USER root
+# set working directory
+WORKDIR /app
 
-RUN mkdir /home/node/app
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
-# VOLUME [ "/home/node/app" ]
-WORKDIR /home/node/app
+# install and cache app dependencies
+COPY package.json /app/package.json
+RUN npm install
 
 CMD /bin/sh
