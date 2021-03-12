@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  nestjs:
+    build: .
+    container_name: node-ca-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/home/node/app:rw
+    restart: "no"
+    command: sh
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  mysql:
+      container_name: node-ca-mysql
+      image: library/mysql:5.7
+      restart: unless-stopped
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=${DB_DATABASE:-node_ddd_dev}
+        - MYSQL_USER=${DB_USERNAME:-root}
+        - MYSQL_PASSWORD=${DB_PASSWORD:-root}
+      tty: true
+      volumes:
+        - data-mysql:/var/lib/mysql
+      ports:
+        - 3306:3306
+      expose:
+        - 3306
+
+volumes:
+  data-mysql: { }
