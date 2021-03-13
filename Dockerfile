@@ -6,9 +6,9 @@ RUN apk add --update --no-cache \
     git \
     vim
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+    RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
-USER node
+USER root
 
 # set working directory
 WORKDIR /home/node/app

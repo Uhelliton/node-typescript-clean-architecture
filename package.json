@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Uhelliton/node-typescript-clean-architecture/issues"
   },
-  "homepage": "https://github.com/Uhelliton/node-typescript-clean-architecture#readme"
+  "homepage": "https://github.com/Uhelliton/node-typescript-clean-architecture#readme",
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1"
+  }
 }
