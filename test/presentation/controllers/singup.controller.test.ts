@@ -10,6 +10,8 @@ describe('SingUp Controller', () => {
             passwordConfirmation: 'any_password_confirm',
         }
         const httpResponse = sut.handle(httpRequest)
+
         expect(httpResponse.statusCode).toBe(400)
+        expect(httpResponse.body).toEqual(new Error('Mission param: name'))
     })
 })
