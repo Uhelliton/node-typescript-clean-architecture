@@ -1,14 +1,24 @@
 # base image
 FROM node:12.2.0-alpine
 
-# set working directory
-WORKDIR /app
+RUN apk add --update --no-cache \
+    curl \
+    git \
+    vim
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+
+USER node
+
+# set working directory
+WORKDIR /home/node/app
 
 # install and cache app dependencies
-COPY package.json /app/package.json
+COPY package*.json ./
+COPY --chown=node:node . .
+
 RUN npm install
 
-CMD /bin/sh
+EXPOSE 8080
+
+CMD [ "node" ]
