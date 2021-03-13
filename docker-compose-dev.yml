@@ -3,15 +3,11 @@ version: '3'
 services:
   nodejs:
     build: .
-    container_name: node-ca-api
+    container_name: nodejs
     ports:
-      - "3000:3000"
+      - "99:8080"
     volumes:
-      - '.:/app'
-      - '/app/node_modules'
-    restart: "no"
-    command: sh
-    stdin_open: true
+      - '.:/home/node/app'
     tty: true
     environment:
       - CHOKIDAR_USEPOLLING=true
