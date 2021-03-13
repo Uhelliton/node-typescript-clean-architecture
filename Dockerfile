@@ -1,24 +1,20 @@
-# base image
-FROM node:12.2.0-alpine
+FROM node:latest
 
-RUN apk add --update --no-cache \
-    curl \
-    git \
-    vim
+# Create app directoryy
+RUN mkdir -p /var/www/app
+WORKDIR /var/www/app
 
-    RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-
-USER root
-
-# set working directory
-WORKDIR /home/node/app
-
-# install and cache app dependencies
-COPY package*.json ./
-COPY --chown=node:node . .
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package.json /var/www/app
 
 RUN npm install
+# If you are building your code for production
+# RUN npm install --only=production
 
-EXPOSE 8080
+# Bundle app source
+COPY . .
 
+EXPOSE 3000
 CMD [ "node" ]
