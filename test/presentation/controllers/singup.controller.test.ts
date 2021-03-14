@@ -28,6 +28,15 @@ const makeEmailValidator = (): EmailValidator => {
 //     return new EmailValidatorStub()
 // }
 
+// const makeAddAccount = (): AddAccount => {
+//     class AddAccountStub implements AddAccount {
+//         add (account: AddAccountModel): AccountModel {
+//             return true
+//         }
+//     }
+//     return new AddAccountStub()
+// }
+
 const makeSut = (): SutTypes => {
     const emailValidatorStub = makeEmailValidator()
     const sut = new SingUpController(emailValidatorStub)
@@ -178,5 +187,27 @@ describe('SingUp Controller', () => {
         expect(httpResponse.statusCode).toBe(500)
         expect(httpResponse.body).toEqual(new ServerError())
     })
+
+    // test('Should call AddAccount with correct values', () => {
+    //     // system under test
+    //     const { sut, addAccountStub } = makeSut()
+    //
+    //     const addSpy = jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(false)
+    //
+    //     const httpRequest = {
+    //         body: {
+    //             name: 'any_name',
+    //             email: 'invalid_email@email.com',
+    //             password: 'any_password',
+    //             passwordConfirmation: 'any_password_confirmation',
+    //         }
+    //     }
+    //     const httpResponse = sut.handle(httpRequest)
+    //     expect(addSpy).toHaveBeenCalledWith({
+    //         name: 'any_name',
+    //         email: 'invalid_email@email.com',
+    //         password: 'any_password',
+    //     })
+    // })
 
 })
