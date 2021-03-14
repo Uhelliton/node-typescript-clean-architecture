@@ -1,5 +1,7 @@
+import { HttpResponse, HttpRequest } from '@src/presentation/protocols/http'
+
 export class SingUpController {
-    handle (httpRequest: any): any {
+    handle (httpRequest: HttpRequest): HttpResponse|undefined {
        if (!httpRequest.body.name) {
           return {
               statusCode: 400,
