@@ -1,8 +1,6 @@
 import { SingUpController } from '@src/presentation/controllers/singup.controller'
-import { MissingParamError } from '@src/presentation/erros/missing-param.error'
-import { InvalidParamError } from '@src/presentation/erros/invalid-param.error'
+import { MissingParamError, InvalidParamError, ServerError } from '@src/presentation/erros'
 import { EmailValidator } from '@src/presentation/protocols/email.validator'
-import { ServerError } from '@src/presentation/erros/server.error'
 
 // sut   -- system under test
 // Stub -- Dublê de tests fake
