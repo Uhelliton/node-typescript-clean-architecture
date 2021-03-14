@@ -1,14 +1,33 @@
 import { SingUpController } from '@src/presentation/controllers/singup.controller'
 import { MissingParamError } from '@src/presentation/erros/missing-param.error'
+import { InvalidParamError } from '@src/presentation/erros/invalid-param.error'
+import { EmailValidator } from '@src/presentation/protocols/email.validator'
 
-const makeSut = (): SingUpController => {
-    return new SingUpController()
+// sut   -- system under test
+// Stub -- Dublê de tests fake
+
+interface SutTypes {
+    sut: SingUpController,
+    emailValidatorStub: EmailValidator
+}
+
+const makeSut = (): SutTypes => {
+    class EmailValidatorStub implements EmailValidator {
+        isValid (email: string): boolean {
+            return true
+        }
+    }
+
+    const emailValidatorStub = new EmailValidatorStub()
+    const sut = new SingUpController(emailValidatorStub)
+
+    return { sut, emailValidatorStub }
 }
 
 describe('SingUp Controller', () => {
     test('Should return 400 if no name is provided', () => {
         // system under test
-        const sut = makeSut()
+        const { sut } = makeSut()
         const httpRequest = {
             body: {
                 email: 'any_email',
@@ -24,7 +43,7 @@ describe('SingUp Controller', () => {
 
     test('Should return 400 if no email is provided', () => {
         // system under test
-        const sut = makeSut()
+        const { sut } = makeSut()
         const httpRequest = {
            body: {
                name: 'any_name',
@@ -40,7 +59,7 @@ describe('SingUp Controller', () => {
 
     test('Should return 400 if no password is provided', () => {
         // system under test
-        const sut = makeSut()
+        const { sut } = makeSut()
         const httpRequest = {
             body: {
                 name: 'any_name',
@@ -56,7 +75,7 @@ describe('SingUp Controller', () => {
 
     test('Should return 400 if no passwordConfirmation is provided', () => {
         // system under test
-        const sut = makeSut()
+        const { sut } = makeSut()
         const httpRequest = {
             body: {
                 name: 'any_name',
@@ -68,5 +87,26 @@ describe('SingUp Controller', () => {
 
         expect(httpResponse.statusCode).toBe(400)
         expect(httpResponse.body).toEqual(new MissingParamError('passwordConfirmation'))
+    })
+
+    test('Should return 400 if an invalid email is provided', () => {
+        // system under test
+        const { sut, emailValidatorStub } = makeSut()
+
+        // spyOn para expionar um método de uma classe e alterar seu valor
+        jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
+
+        const httpRequest = {
+            body: {
+                name: 'any_name',
+                email: 'invalid_email@email.com',
+                password: 'any_password',
+                passwordConfirmation: 'any_password_confirmation',
+            }
+        }
+        const httpResponse = sut.handle(httpRequest)
+
+        expect(httpResponse.statusCode).toBe(400)
+        expect(httpResponse.body).toEqual(new InvalidParamError('email'))
     })
 })
