@@ -188,7 +188,6 @@ describe('SingUp Controller', () => {
         expect(httpResponse.body).toEqual(new ServerError())
     })
 
-
     // test('Should call AddAccount with correct values', () => {
     //     // system under test
     //     const { sut, addAccountStub } = makeSut()
