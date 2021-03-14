@@ -1,14 +1,11 @@
 import { SingUpController } from '@src/presentation/controllers/singup.controller'
 import { MissingParamError, InvalidParamError, ServerError } from '@src/presentation/erros'
 import { EmailValidator } from '@src/presentation/protocols'
+import {AddAccount, AddAccountModel} from '@src/domains/usercases/add-account'
+import { AccountModel } from '@src/domains/models/account.model'
 
 // sut   -- system under test
 // Stub -- Dublê de tests fake
-
-interface SutTypes {
-    sut: SingUpController,
-    emailValidatorStub: EmailValidator
-}
 
 const makeEmailValidator = (): EmailValidator => {
     class EmailValidatorStub implements EmailValidator {
@@ -28,20 +25,34 @@ const makeEmailValidator = (): EmailValidator => {
 //     return new EmailValidatorStub()
 // }
 
-// const makeAddAccount = (): AddAccount => {
-//     class AddAccountStub implements AddAccount {
-//         add (account: AddAccountModel): AccountModel {
-//             return true
-//         }
-//     }
-//     return new AddAccountStub()
-// }
+const makeAddAccount = (): AddAccount => {
+    class AddAccountStub implements AddAccount {
+        add (account: AddAccountModel): AccountModel {
+            const fakeAccount = {
+                id: 'valid_id',
+                name: 'valid_name',
+                email: 'valid_email',
+                password: 'valid_password',
+            }
+
+            return fakeAccount
+        }
+    }
+    return new AddAccountStub()
+}
+
+interface SutTypes {
+    sut: SingUpController,
+    emailValidatorStub: EmailValidator,
+    addAccountStub: AddAccount
+}
 
 const makeSut = (): SutTypes => {
     const emailValidatorStub = makeEmailValidator()
-    const sut = new SingUpController(emailValidatorStub)
+    const addAccountStub = makeAddAccount()
+    const sut = new SingUpController(emailValidatorStub, addAccountStub)
 
-    return { sut, emailValidatorStub }
+    return { sut, emailValidatorStub, addAccountStub }
 }
 
 describe('SingUp Controller', () => {
@@ -188,26 +199,25 @@ describe('SingUp Controller', () => {
         expect(httpResponse.body).toEqual(new ServerError())
     })
 
-    // test('Should call AddAccount with correct values', () => {
-    //     // system under test
-    //     const { sut, addAccountStub } = makeSut()
-    //
-    //     const addSpy = jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(false)
-    //
-    //     const httpRequest = {
-    //         body: {
-    //             name: 'any_name',
-    //             email: 'invalid_email@email.com',
-    //             password: 'any_password',
-    //             passwordConfirmation: 'any_password_confirmation',
-    //         }
-    //     }
-    //     const httpResponse = sut.handle(httpRequest)
-    //     expect(addSpy).toHaveBeenCalledWith({
-    //         name: 'any_name',
-    //         email: 'invalid_email@email.com',
-    //         password: 'any_password',
-    //     })
-    // })
+    test('Should call AddAccount with correct values', () => {
+        // system under test
+        const { sut, addAccountStub } = makeSut()
+        const addSpy = jest.spyOn(addAccountStub, 'add')
+
+        const httpRequest = {
+            body: {
+                name: 'any_name',
+                email: 'any_email@email.com',
+                password: 'any_password',
+                passwordConfirmation: 'any_password',
+            }
+        }
+        sut.handle(httpRequest)
+        expect(addSpy).toHaveBeenCalledWith({
+            name: 'any_name',
+            email: 'any_email@email.com',
+            password: 'any_password'
+        })
+    })
 
 })
