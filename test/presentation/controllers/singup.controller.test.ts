@@ -2,6 +2,7 @@ import { SingUpController } from '@src/presentation/controllers/singup.controlle
 import { MissingParamError } from '@src/presentation/erros/missing-param.error'
 import { InvalidParamError } from '@src/presentation/erros/invalid-param.error'
 import { EmailValidator } from '@src/presentation/protocols/email.validator'
+import { ServerError } from '@src/presentation/erros/server.error'
 
 // sut   -- system under test
 // Stub -- Dublê de tests fake
@@ -129,5 +130,29 @@ describe('SingUp Controller', () => {
 
         sut.handle(httpRequest)
         expect(isValidSpy).toHaveBeenCalledWith(email)
+    })
+
+    test('Should return 500 if EmailValidator throws', () => {
+        class EmailValidatorStub implements EmailValidator {
+            isValid (email: string): boolean {
+                throw new Error()
+            }
+        }
+
+        const emailValidatorStub = new EmailValidatorStub()
+        const sut = new SingUpController(emailValidatorStub)
+
+        const httpRequest = {
+            body: {
+                name: 'any_name',
+                email: 'any_email@email.com',
+                password: 'any_password',
+                passwordConfirmation: 'any_password_confirmation',
+            }
+        }
+        const httpResponse = sut.handle(httpRequest)
+
+        expect(httpResponse.statusCode).toBe(500)
+        expect(httpResponse.body).toEqual(new ServerError())
     })
 })
