@@ -1,8 +1,7 @@
-import { SingUpController } from '@src/presentation/controllers/singup.controller'
+import { SingUpController } from '@src/presentation/controllers/singup/singup.controller'
 import { MissingParamError, InvalidParamError, ServerError } from '@src/presentation/erros'
-import { EmailValidator } from '@src/presentation/protocols'
-import {AddAccount, AddAccountModel} from '@src/domains/usercases/add-account'
-import { AccountModel } from '@src/domains/models/account.model'
+import { EmailValidator, AddAccount, AccountModel } from '@src/presentation/controllers/singup/singup.protocols'
+import { AddAccountModel } from '@src/domains/usercases/add-account'
 
 // sut   -- system under test
 // Stub -- Dublê de tests fake
