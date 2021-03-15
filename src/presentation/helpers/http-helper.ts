@@ -8,6 +8,13 @@ export const badRequest = (error: Error): HttpResponse => {
     }
 }
 
+export const createRequest = (body: any): HttpResponse => {
+    return {
+        statusCode: 201,
+        body: body
+    }
+}
+
 export const serverError = (): HttpResponse => {
     return {
         statusCode: 500,
